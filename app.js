@@ -5,8 +5,8 @@ var EthJsUtil = require('ethereumjs-util');
 var RPC = require('./libs/rpc')
 var Socket = require('./libs/socket');
 
-var rpcUrl = 'http://localhost:8547'
-var wsUrl = 'ws://localhost:8548'
+var rpcUrl = 'http://localhost:8545'
+var wsUrl = 'ws://localhost:8546'
 var rpc = new RPC(rpcUrl);
 
 
@@ -26,6 +26,9 @@ app.get('/tx', (req, res) => {
             if (err || !tx) {
                 return res.json({ 'e': 'Not found' });
             } else {
+                if(tx.blockTime) {
+                    tx.blockTime = parseInt(tx.blockTime, 16)
+                }
                 rpc.getTransactionReceipt(hash, (err, rs) => {
                     if (rs) {
                         tx.gasUsed = rs.gasUsed;
