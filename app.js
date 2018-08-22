@@ -5,15 +5,11 @@ var EthJsUtil = require('ethereumjs-util');
 var RPC = require('./libs/rpc')
 var Socket = require('./libs/socket');
 
-var rpcUrl = 'http://localhost:8545'
-var wsUrl = 'ws://localhost:8546'
+
+var port = 8545 //+ 2;
+var rpcUrl = 'http://localhost:' + port;
+var wsUrl = 'ws://localhost:'  + (port + 1)
 var rpc = new RPC(rpcUrl);
-
-
-// rpc.getBlockByNumber(1, (err, rs)=>{
-//     console.log(err);
-//     console.log(rs);
-// })
 
 var app = express();
 app.use(express.json());
@@ -45,6 +41,24 @@ app.get('/tx', (req, res) => {
     }
 })
 
+app.get('/tx/pool', (req, res) => {
+    if (req.query.limit) {
+        var number = parseInt(req.query.limit);
+        if (isNaN(number)) {
+            return res.json({ 'e': 'Limit must be number' })
+        }
+        rpc.getPoolTransactionsLimit(number, (err, rs) => {
+            console.log(err, rs);
+            if (err || !rs) {
+                return res.json({ 'e': 'Not found' });
+            } else {
+                res.json({ 'data': rs });
+            }
+        })
+    } else {
+        res.json({ 'e': 'Invalid url' });
+    }
+})
 app.get('/block', (req, res) => {
     if (req.query.number) {
         var number = req.query.number;
@@ -89,6 +103,21 @@ app.get('/addr', (req, res) => {
         res.json({ 'e': 'Invalid url' });
     }
 })
+app.get('/addr/txs', (req, res) => {
+    var addr = req.query.a;
+    console.log('request history ', addr);
+    if (!EthJsUtil.isValidAddress(addr)) {
+        return res.json({ 'e': 'Invalid address' });
+    }
+
+    rpc.getAddressHistory(addr, 0, 20, (err, rs) => {
+        if (err || !rs) {
+            return res.json({ 'e': 'Not found' });
+        } else {
+            res.json({ 'data': rs });
+        }
+    })
+})
 app.get('/addr/erc20', (req, res) => {
     var addr = req.query.a;
     var contractAddr = req.query.c;
@@ -105,7 +134,6 @@ app.get('/addr/erc20', (req, res) => {
         }
     })
 })
-
 
 var server = http.createServer(app);
 var socket = new Socket(wsUrl, server);

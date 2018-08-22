@@ -36,6 +36,14 @@ class RPC {
                 params: 1,
             }]
         });
+        this.web3.extend({
+            property: 'eth',
+            methods: [{
+                name: 'getPoolTransactionsLimit',
+                call: 'eth_getPoolTransactionsLimit',
+                params: 1,
+            }]
+        });
     }
 
     getBlockByNumber(blockNumber, cb) {
@@ -60,7 +68,7 @@ class RPC {
                 //     "balance": balance,
                 //     "txs": history
                 // }
-                this.getAddressPendingTxs(addr, (err, pendings)=>{
+                this.getAddressPendingTxs(addr, (err, pendings) => {
                     var rs = [];
                     if (pendings) {
                         rs = rs.concat(pendings)
@@ -72,13 +80,29 @@ class RPC {
             })
         })
     }
+    getAddressHistory(addr, offset, limit, cb) {
+        this.web3.eth.getHistory(addr, offset, limit, (err, history) => {
+            if (err) {
+                return cb(err)
+            }
+            this.getAddressPendingTxs(addr, (err, pendings) => {
+                var rs = [];
+                if (pendings) {
+                    rs = rs.concat(pendings)
+                }
+                rs = rs.concat(history.data)
+                
+                cb(null, rs)
+            })
+        })
+    }
     getAddressPendingTxs(addr, cb) {
         this.web3.eth.getPendingTxsByAddress(addr, (err, txs) => {
             if (err) {
                 return cb(err)
             }
             if (txs) {
-                for (var i = 0; i< txs.length; i++) {
+                for (var i = 0; i < txs.length; i++) {
                     var tx = new EthJsTx(txs[i]);
                     var from = '0x' + tx.getSenderAddress().toString('hex');
                     txs[i].from = from;
@@ -98,6 +122,21 @@ class RPC {
     getLatestNumber(cb) {
         this.web3.eth.getBlockNumber((err, rs) => {
             cb(err, rs);
+        })
+    }
+    getPoolTransactionsLimit(limit, cb) {
+        this.web3.eth.getPoolTransactionsLimit(limit, (err, txs) => {
+            if (err) {
+                return cb(err)
+            }
+            if (txs) {
+                for (var i = 0; i < txs.length; i++) {
+                    var tx = new EthJsTx(txs[i]);
+                    var from = '0x' + tx.getSenderAddress().toString('hex');
+                    txs[i].from = from;
+                }
+            }
+            return cb(null, txs)
         })
     }
 }
