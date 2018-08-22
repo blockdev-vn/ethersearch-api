@@ -19,8 +19,8 @@
     "type": "git",
     "url": "git+https://github.com/blockdev-vn/ethersearch-api.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["ethereum explorer","ERC20 history"],
+  "author": "blockdev.vn@gmail.com",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/blockdev-vn/ethersearch-api/issues"

@@ -1,5 +1,13 @@
 # ethersearch-api
-This is and api server for ethereum explorer
+This is an api server for [ethersearch-ui](https://github.com/blockdev-vn/ethersearch-ui) - an ethereum explorer.
+
+# Install
+Ethersearch-api is a NodeJS project, it's easy to install.
+
+```
+npm install
+npm start
+```
 
 # Api
 ## Transaction
