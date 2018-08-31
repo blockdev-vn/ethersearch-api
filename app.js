@@ -30,7 +30,7 @@ app.get('/tx', (req, res) => {
                         tx.gasUsed = rs.gasUsed;
                         tx.logs = rs.logs;
                         tx.status = rs.status;
-                        console.log(rs);
+                        // console.log(rs);
                     }
                     res.json({ 'data': tx });
                 })
@@ -48,7 +48,7 @@ app.get('/tx/pool', (req, res) => {
             return res.json({ 'e': 'Limit must be number' })
         }
         rpc.getPoolTransactionsLimit(number, (err, rs) => {
-            console.log(err, rs);
+            // console.log(err, rs);
             if (err || !rs) {
                 return res.json({ 'e': 'Not found' });
             } else {
@@ -105,7 +105,7 @@ app.get('/addr', (req, res) => {
 })
 app.get('/addr/txs', (req, res) => {
     var addr = req.query.a;
-    console.log('request history ', addr);
+    // console.log('request history ', addr);
     if (!EthJsUtil.isValidAddress(addr)) {
         return res.json({ 'e': 'Invalid address' });
     }
@@ -121,7 +121,7 @@ app.get('/addr/txs', (req, res) => {
 app.get('/addr/erc20', (req, res) => {
     var addr = req.query.a;
     var contractAddr = req.query.c;
-    console.log('request erc20 ', addr, contractAddr);
+    // console.log('request erc20 ', addr, contractAddr);
     if (!EthJsUtil.isValidAddress(addr) || !EthJsUtil.isValidAddress(contractAddr)) {
         return res.json({ 'e': 'Invalid address' });
     }
