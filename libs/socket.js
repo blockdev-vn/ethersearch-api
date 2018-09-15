@@ -43,7 +43,7 @@ class Socket {
         var self = this;
         this.web3.eth.subscribe('newBlockHeaders', function (err, rs) {
             if (rs) {
-                console.log(rs.number, rs.hash);
+                // console.log(rs.number, rs.hash);
                 self.io.to(CONST.BlockNew).emit(CONST.BlockNew, rs)
             }
         })

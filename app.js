@@ -6,7 +6,7 @@ var RPC = require('./libs/rpc')
 var Socket = require('./libs/socket');
 
 
-var port = 8545 //+ 2;
+var port = 8545 + 2;
 var rpcUrl = 'http://localhost:' + port;
 var wsUrl = 'ws://localhost:'  + (port + 1)
 var rpc = new RPC(rpcUrl);
