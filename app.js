@@ -7,11 +7,11 @@ var Socket = require('./libs/socket');
 
 
 var rpcPort = process.env.RCP_PORT || 8545;
-var wsPort = process.env.WS_PORT || (rpcPort + 1)
+var wsPort = process.env.WS_PORT || (rpcPort*1 + 1)
 var rpcUrl = 'http://localhost:' + rpcPort;
 var wsUrl = 'ws://localhost:'  + wsPort;
 var rpc = new RPC(rpcUrl);
-
+console.log(rpcUrl);
 var app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -68,6 +68,7 @@ app.get('/block', (req, res) => {
         }
         rpc.getBlockByNumber(number, (err, rs) => {
             if (err || !rs) {
+                console.log(err);
                 return res.json({ 'e': 'Not found' });
             } else {
                 res.json({ 'data': rs });
@@ -86,6 +87,7 @@ app.get('/latestnumber', (req, res) => {
         }
     })
 })
+// Address summary
 app.get('/addr', (req, res) => {
     if (req.query.a) {
         var addr = req.query.a;
@@ -119,16 +121,60 @@ app.get('/addr/txs', (req, res) => {
         }
     })
 })
-app.get('/addr/erc20', (req, res) => {
+app.get('/addr/erc20/txs', (req, res) => {
     var addr = req.query.a;
     var contractAddr = req.query.c;
-    // console.log('request erc20 ', addr, contractAddr);
     if (!EthJsUtil.isValidAddress(addr) || !EthJsUtil.isValidAddress(contractAddr)) {
         return res.json({ 'e': 'Invalid address' });
     }
 
     rpc.getERC20History(addr, contractAddr, 0, 20, (err, rs) => {
         if (err || !rs) {
+            return res.json({ 'e': 'Not found' });
+        } else {
+            res.json(rs);
+        }
+    })
+})
+app.get('/addr/erc20/balance', (req, res) => {
+    var addr = req.query.a;
+    var contractAddr = req.query.c;
+    if (!EthJsUtil.isValidAddress(addr) || !EthJsUtil.isValidAddress(contractAddr)) {
+        return res.json({ 'e': 'Invalid address' });
+    }
+
+    rpc.getERC20Balance(addr, contractAddr, (err, rs) => {
+        if (err || !rs) {
+            return res.json({ 'e': 'Not found' });
+        } else {
+            res.json(rs);
+        }
+    })
+})
+app.get('/addr/nonce', (req, res) => {
+    var addr = req.query.a;
+    var block = req.query.block;
+    if (!EthJsUtil.isValidAddress(addr)) {
+        return res.json({ 'e': 'Invalid address' });
+    }
+
+    rpc.getAddressNonce(addr, block, (err, rs) => {
+        if (err) {
+            return res.json({ 'e': 'Not found' });
+        } else {
+            res.json(rs);
+        }
+    })
+})
+app.get('/addr/balance', (req, res) => {
+    var addr = req.query.a;
+    var block = req.query.block;
+    if (!EthJsUtil.isValidAddress(addr)) {
+        return res.json({ 'e': 'Invalid address' });
+    }
+
+    rpc.getAddressBalance(addr, block, (err, rs) => {
+        if (err) {
             return res.json({ 'e': 'Not found' });
         } else {
             res.json(rs);

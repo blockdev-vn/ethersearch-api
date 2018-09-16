@@ -111,12 +111,41 @@ class RPC {
             return cb(null, txs)
         })
     }
+    getAddressNonce(addr, block, cb) {
+        this.web3.eth.getTransactionCount(addr, block, (err, rs)=>{
+            console.log(addr, block);
+            console.log(err);
+            console.log(rs);
+            cb(err, rs)
+        })
+    }
+    getAddressBalance(addr, block, cb) {
+        this.web3.eth.getBalance(addr, block, (err, rs)=>{
+            console.log(addr, block);
+            console.log(err);
+            console.log(rs);
+            cb(err, rs)
+        })
+    }
     getERC20History(addr, contractAddr, offset, limit, cb) {
         this.web3.eth.getERC20TokenHistory(addr, contractAddr, offset, limit, (err, history) => {
             if (err) {
                 return cb(err)
             }
             cb(null, history)
+        })
+    }
+    getERC20Balance(addr, contractAddr, cb) {
+        if(addr.length ==42) {
+            addr = addr.substring(2)
+        }
+        this.web3.eth.call({
+            to: contractAddr,
+            data: '0x70a08231000000000000000000000000' + addr
+        }, (err, rs)=>{
+            console.log(err);
+            console.log(rs);
+            cb(err, rs)
         })
     }
     getLatestNumber(cb) {

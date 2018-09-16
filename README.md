@@ -213,9 +213,9 @@ localhost:3000/addr/txs?a=0x2F0036792DF25362a2DE0Bab82B4798657B4BC36
 Return the last 20 ERC20 transactions of an address 
 
 ```
-localhost:3000/addr/erc20?a=<address>&c=<token address>
+localhost:3000/addr/erc20/txs?a=<address>&c=<token address>
 
-localhost:3000/addr/erc20?a=0x2F0036792DF25362a2DE0Bab82B4798657B4BC36&c=0x2d051595aa51a29c6eda4eacafbe79234508ca7c
+localhost:3000/addr/erc20/txs?a=0x2F0036792DF25362a2DE0Bab82B4798657B4BC36&c=0x2d051595aa51a29c6eda4eacafbe79234508ca7c
 ```
 
 ```

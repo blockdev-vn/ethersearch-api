@@ -12,7 +12,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "export RCP_PORT=8547 && nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
