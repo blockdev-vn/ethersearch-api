@@ -1,0 +1,8 @@
+
+var App = require('../app');
+var rpcUrl = process.env.RCP_URL || 'http://localhost:8547';
+var wsUrl = process.env.WS_URL || 'ws://localhost:8548';
+var port = process.env.PORT || 3000;
+
+var app = new App(rpcUrl, wsUrl, port);
+app.start()
