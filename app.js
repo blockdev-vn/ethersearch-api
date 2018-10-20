@@ -14,7 +14,7 @@ function createApp(rpcUrl) {
     // var rpcUrl = 'http://localhost:' + rpcPort;
     // var wsUrl = 'ws://localhost:'  + wsPort;
     var rpc = new RPC(rpcUrl);
-    console.log(rpcUrl);
+    // console.log(rpcUrl);
     var app = express();
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));

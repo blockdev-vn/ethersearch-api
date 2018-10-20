@@ -2,7 +2,8 @@
 var Web3 = require('web3');
 var IO = require('socket.io');
 var CONST = require('./const');
-var Tx = require('ethereumjs-tx');
+var BN = require("ethereumjs-util").BN;
+var AddrParser = require('./parseAddress')
 
 class Socket {
     constructor(url, server) {
@@ -16,7 +17,6 @@ class Socket {
     handleConnection() {
         var self = this;
         this.io.sockets.on('connection', function (socket) {
-            console.log('connect from ', socket.id);
             self.handleJoin(socket);
             self.handleLeave(socket);
         })
@@ -24,7 +24,6 @@ class Socket {
     handleJoin(socket) {
         var self = this;
         socket.on(CONST.Join, (room) => {
-            console.log('join ', room);
             socket.join(room);
             socket.emit(CONST.Join, room)
         })
@@ -43,7 +42,11 @@ class Socket {
         var self = this;
         this.web3.eth.subscribe('newBlockHeaders', function (err, rs) {
             if (rs) {
-                // console.log(rs.number, rs.hash);
+
+                if(rs.addresses) {
+                    var addresses = AddrParser.Parse(rs.addresses);
+                    rs.addresses = addresses;
+                }
                 self.io.to(CONST.BlockNew).emit(CONST.BlockNew, rs)
             }
         })
@@ -52,10 +55,15 @@ class Socket {
         var self = this;
         this.web3.eth.subscribe('pendingTransactions', function (err, rs) {
             if (rs) {
+                var val = new BN(rs.value.substr(2), 16).toString(10);
+
+                rs.value=val;
                 self.io.to(CONST.TxNew).emit(CONST.TxNew, rs)
             }
         })
     }
+   
 }
+
 
 module.exports = Socket
