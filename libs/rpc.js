@@ -44,6 +44,14 @@ class RPC {
                 params: 1,
             }]
         });
+        this.web3.extend({
+            property: 'eth',
+            methods: [{
+                name: 'getContractList',
+                call: 'eth_getContractList',
+                params: 2,
+            }]
+        });
     }
 
     getBlockByNumber(blockNumber, cb) {
@@ -113,17 +121,11 @@ class RPC {
     }
     getAddressNonce(addr, block, cb) {
         this.web3.eth.getTransactionCount(addr, block, (err, rs)=>{
-            console.log(addr, block);
-            console.log(err);
-            console.log(rs);
             cb(err, rs)
         })
     }
     getAddressBalance(addr, block, cb) {
         this.web3.eth.getBalance(addr, block, (err, rs)=>{
-            console.log(addr, block);
-            console.log(err);
-            console.log(rs);
             cb(err, rs)
         })
     }
@@ -143,8 +145,6 @@ class RPC {
             to: contractAddr,
             data: '0x70a08231000000000000000000000000' + addr
         }, (err, rs)=>{
-            console.log(err);
-            console.log(rs);
             cb(err, rs)
         })
     }
@@ -166,6 +166,11 @@ class RPC {
                 }
             }
             return cb(null, txs)
+        })
+    }
+    getContractList(offset, limit, cb) {
+        this.web3.eth.getContractList(offset, limit, (err, rs) =>{
+            cb(err, rs)
         })
     }
 }

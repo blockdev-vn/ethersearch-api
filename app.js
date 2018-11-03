@@ -14,7 +14,6 @@ function createApp(rpcUrl) {
     // var rpcUrl = 'http://localhost:' + rpcPort;
     // var wsUrl = 'ws://localhost:'  + wsPort;
     var rpc = new RPC(rpcUrl);
-    // console.log(rpcUrl);
     var app = express();
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
@@ -34,7 +33,6 @@ function createApp(rpcUrl) {
                             tx.gasUsed = rs.gasUsed;
                             tx.logs = rs.logs;
                             tx.status = rs.status;
-                            // console.log(rs);
                         }
                         res.json({ 'data': tx });
                     })
@@ -52,7 +50,6 @@ function createApp(rpcUrl) {
                 return res.json({ 'e': 'Limit must be number' })
             }
             rpc.getPoolTransactionsLimit(number, (err, rs) => {
-                // console.log(err, rs);
                 if (err || !rs) {
                     return res.json({ 'e': 'Not found' });
                 } else {
@@ -71,7 +68,6 @@ function createApp(rpcUrl) {
             }
             rpc.getBlockByNumber(number, (err, rs) => {
                 if (err || !rs) {
-                    console.log(err);
                     return res.json({ 'e': 'Not found' });
                 } else {
                     res.json({ 'data': rs });
@@ -111,7 +107,6 @@ function createApp(rpcUrl) {
     })
     app.get('/addr/txs', (req, res) => {
         var addr = req.query.a;
-        // console.log('request history ', addr);
         if (!EthJsUtil.isValidAddress(addr)) {
             return res.json({ 'e': 'Invalid address' });
         }
@@ -177,6 +172,17 @@ function createApp(rpcUrl) {
         }
     
         rpc.getAddressBalance(addr, block, (err, rs) => {
+            if (err) {
+                return res.json({ 'e': 'Not found' });
+            } else {
+                res.json(rs);
+            }
+        })
+    })
+    app.get('/contract/list', (req, res) => {
+        var offset = req.query.offset*1;
+        var limit = 20;
+        rpc.getContractList(offset, limit,  (err, rs) => {
             if (err) {
                 return res.json({ 'e': 'Not found' });
             } else {

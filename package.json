@@ -12,7 +12,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "export RCP_PORT=8547 && nodemon ./bin/www",
+    "start": "RCP_URL=http://localhost:8547 WS_URL=ws://localhost:8548  nodemon ./bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
