@@ -190,6 +190,16 @@ function createApp(rpcUrl) {
             }
         })
     })
+    app.get('/contract/detail', (req, res) => {
+        var addr = req.query.a;
+        rpc.getContractDetail(addr,  (err, rs) => {
+            if (err) {
+                return res.json({ 'e': 'Not found' });
+            } else {
+                res.json(rs);
+            }
+        })
+    })
     return app;
 }
 // var server = http.createServer(app);

@@ -52,6 +52,14 @@ class RPC {
                 params: 2,
             }]
         });
+        this.web3.extend({
+            property: 'eth',
+            methods: [{
+                name: 'getContractDetail',
+                call: 'eth_getContractDetail',
+                params: 1,
+            }]
+        });
     }
 
     getBlockByNumber(blockNumber, cb) {
@@ -170,6 +178,11 @@ class RPC {
     }
     getContractList(offset, limit, cb) {
         this.web3.eth.getContractList(offset, limit, (err, rs) =>{
+            cb(err, rs)
+        })
+    }
+    getContractDetail(addr, cb) {
+        this.web3.eth.getContractDetail(addr, (err, rs) =>{
             cb(err, rs)
         })
     }
